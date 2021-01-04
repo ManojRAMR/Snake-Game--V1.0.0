@@ -4,6 +4,8 @@ const scoreBox = document.getElementById("score");
 let cellArray = [];
 let cellArrayLength = 0;
 let snakeCells = [42, 43, 44];
+let isCrashed = false;
+let playerScore = 0;
 
 const createACell = () => {
   const cell = document.createElement("div");
@@ -38,33 +40,55 @@ const addNewHead = (newHead) => {
   renderSnake();
 };
 
+const snakeCrash = (newHead) => {
+  const hitLeftWall = newHead % 10 === 0;
+  const hitRightWall = newHead % 10 === 9;
+  const hitTopWall = newHead < 0;
+  const hitBottomWall = newHead > 99;
+  if (hitLeftWall || hitRightWall || hitTopWall || hitBottomWall) {
+    isCrash = true;
+    scoreBox.textContent = playerScore + " Snake crashed!";
+  }
+};
+
 const moveSnake = (e) => {
   const key = e.key;
   const snakeHead = snakeCells[snakeCells.length - 1];
   let newHead = 0;
+  let directionValue = 1;
   switch (key) {
     case "ArrowLeft":
       // Left pressed
-      newHead = snakeHead - 1;
-      addNewHead(newHead);
+      directionValue = -1;
       break;
     case "ArrowRight":
       // Right pressed
-      newHead = snakeHead + 1;
-      addNewHead(newHead);
+      directionValue = 1;
       break;
     case "ArrowUp":
       // Up pressed
-      newHead = snakeHead - 10;
-      addNewHead(newHead);
+      directionValue = -10;
       break;
     case "ArrowDown":
       // Down pressed
-      newHead = snakeHead + 10;
-      addNewHead(newHead);
+      directionValue = 10;
       break;
   }
+
+  newHead = snakeHead + directionValue;
+  addNewHead(newHead);
+  snakeCrash(newHead);
+  if (isCrashed) return;
 };
+
 document.addEventListener("keyup", (e) => {
   moveSnake(e);
 });
+
+// Move snake in currenly headed direction automaticaly 1 cell per 1 secound
+
+// Change snake cells as snake moves
+
+// Detect wheater snake trying to move beyound the border, if so snake is crashed, game over.
+
+// On press of arrow keys change snake's headed direction.
